@@ -213,7 +213,7 @@ class SistemaPerfilAcesso:
                 'estadual': [],
                 'federal': []
             },
-            'PERFIL_ADMINISTRADOR_MDS': {
+            'PERFIL_ADMINISTRADOR_MD': {
                 'gerais': [
                     'Mural de Comunicação → Visão Geral',
                     'Administração do Sistema → Consultar Integrações',
@@ -228,7 +228,7 @@ class SistemaPerfilAcesso:
                 'estadual': [],
                 'federal': []
             },
-            'PERFIL_ADMINISTRADOR_DATAPREV': {
+            'PERFIL_ADMINISTRADOR_DTP': {
                 'gerais': [
                     'Mural de Comunicação → Visão Geral',
                     'Administração do Sistema → Parâmetros Gerais',
