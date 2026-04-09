@@ -1,0 +1,18 @@
+app = "perfis-acesso"
+
+primary_region = "gru"  # região do Brasil (mais rápida)
+kill_signal = "SIGINT"
+kill_timeout = "5s"
+
+[build]
+  builder = "paketobuildpacks/builder:base"
+
+[env]
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
