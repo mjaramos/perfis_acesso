@@ -17,6 +17,10 @@ def index():
 def api_perfis():
     return jsonify(sistema.listar_perfis())
 
+@app.route('/api/blocos')
+def api_blocos():
+    return jsonify(sistema.listar_blocos())
+
 
 @app.route('/api/abrangencias')
 def api_abrangencias():
@@ -28,6 +32,11 @@ def api_consultar():
     perfil = request.args.get('perfil', '')
     abrangencia = request.args.get('abrangencia', '')
     return jsonify(sistema.consultar_funcionalidades(perfil, abrangencia))
+
+@app.route('/api/consultarBlocos')
+def api_consultarBlocos():
+    bloco = request.args.get('bloco', '')
+    return jsonify(sistema.consultar_bloco(bloco))
 
 
 @app.route('/api/perfil', methods=['POST'])
@@ -63,7 +72,8 @@ def api_remover_funcionalidade():
         d.get('perfil', ''), d.get('abrangencia', ''), d.get('funcionalidade', '')
     ))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
