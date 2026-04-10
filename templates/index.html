@@ -49,6 +49,7 @@
             <button class="tab" onclick="showTab('gerenciar-perfis')">Gerenciar Perfis</button>
             <button class="tab" onclick="showTab('gerenciar-func')">Gerenciar Funcionalidades</button>
             <button class="tab" onclick="showTab('gerenciar-abrang')">Gerenciar Abrangências</button>
+            <button class="tab" onclick="showTab('blocos')">Consultar Blocos</button>
         </div>
 
         <!-- CONSULTAR -->
@@ -116,6 +117,19 @@
             <div class="section-title">Abrangências Existentes</div>
             <div id="abrang-lista"></div>
         </div>
+
+        <!-- BLOCOS -->
+        <div id="blocos" class="panel">
+            <h2>Consultar Blocos</h2>
+            <div class="row">
+                <div>
+                    <label for="c-bloco">Bloco</label>
+                    <select id="c-bloco"></select>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="consultarBlocos()">Consultar Bloco</button>
+            <div id="c-result-bloco"></div>
+        </div>
     </div>
 
 <script>
@@ -145,8 +159,16 @@ async function loadSelects() {
     });
     const fAbrang = document.getElementById('f-abrang');
     fAbrang.innerHTML = '<option value="gerais">Gerais</option>' + abrangs.map(a => `<option value="${a}">${a.charAt(0).toUpperCase()+a.slice(1)}</option>`).join('');
+
+    const [blocos] = await Promise.all([api('/api/blocos')]);
+    ['c-bloco'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = blocos.map(p => `<option value="${p}">${p}</option>`).join('');
+    });
+
     loadPerfisLista(perfis);
     loadAbrangLista(abrangs);
+    loadBlocosLista(blocos);
 }
 
 function msg(elId, text, ok) {
@@ -173,6 +195,26 @@ async function consultar() {
     el.innerHTML = html + '</div>';
 }
 
+async function consultarBlocos() {
+    const bloco = document.getElementById('c-bloco').value;
+    const r = await api(`/api/consultarBlocos?bloco=${bloco}`);
+    const el = document.getElementById('c-result-bloco');
+    if (r.erro) { el.innerHTML = `<div class="msg msg-err">${r.erro}</div>`; return; }
+    let html = `<div class="result">
+        <h3>${r.bloco}</h3>
+        <div class="section-title">Campos</div>
+        <ul>${r.campos.map(f => `<li>${f}</li>`).join('')}</ul>`;
+
+    if (r.criticascruzadas.length) {
+        html += `<div class="section-title">Críticas Cruzadas </div>
+        <ul>${r.criticascruzadas.map(f => `<li>${f}</li>`).join('')}</ul>`;
+    } else {
+        html += `<p style="margin-top:0.5rem;color:#888">Nenhuma critica cruzada específica para ${r.bloco}.</p>`;
+    }
+
+    el.innerHTML = html + '</div>';
+}
+
 async function addPerfil() {
     const nome = document.getElementById('novo-perfil').value.trim();
     if (!nome) return;
@@ -190,6 +232,12 @@ async function removePerfil(nome) {
 
 function loadPerfisLista(perfis) {
     document.getElementById('perfis-lista').innerHTML = perfis.map(p =>
+        `<div class="func-item"><span>${p}</span><button class="btn-danger" onclick="removePerfil('${p}')">Remover</button></div>`
+    ).join('');
+}
+
+function loadBlocosLista(blocos) {
+    document.getElementById('blocos-lista').innerHTML = blocos.map(p =>
         `<div class="func-item"><span>${p}</span><button class="btn-danger" onclick="removePerfil('${p}')">Remover</button></div>`
     ).join('');
 }
